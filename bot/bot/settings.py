@@ -10,136 +10,191 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-_)=qk!+dh_#-!%)hi3*4pnl5f^k#eyzndwp9sx^azg1-duz)sf"
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-_)=qk!+dh_#-!%)hi3*4pnl5f^k#eyzndwp9sx^azg1-duz)sf')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Application definition
-
 INSTALLED_APPS = [
     'corsheaders',
-    "django.contrib.sites",
-    "rest_framework",
-    "pages.apps.PagesConfig",
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
+    'django.contrib.sites',
+    'rest_framework',
+    # Allauth core
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # Social providers
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    # Custom apps
+    'dashboard.apps.DashboardConfig',
+    'conversations.apps.ConversationsConfig',
+    'create_agent.apps.CreateAgentConfig',
+    'integrations.apps.IntegrationsConfig',
+    'usage_plans.apps.UsagePlansConfig',
+    'accounts.apps.AccountsConfig',
+    # Django built-in apps
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 ]
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+# Allauth settings
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Required for allauth
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",  # or "*" for testing only
-    "https://preview--chatty-user-homebase.lovable.app",  # your actual frontend
-]
+# CORS settings
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:8000,https://preview--chatty-user-homebase.lovable.app').split(',')
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'True').lower() == 'true'
 
-CORS_ALLOW_ALL_ORIGINS = True
-
-  
-
-
-ROOT_URLCONF = "bot.urls"
+ROOT_URLCONF = 'bot.urls'
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],  # Added templates directory
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "bot.wsgi.application"
-
+WSGI_APPLICATION = 'bot.wsgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "nzzsbnxhgbyhzbqqujcn",
-        "USER": "postgres.nzzsbnxhgbyhzbqqujcn",
-        "PASSWORD": "3010168Tofa@@##",
-        "HOST": "aws-0-eu-central-1.pooler.supabase.com",
-        "PORT": "6543",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'nzzsbnxhgbyhzbqqujcn'),
+        'USER': os.getenv('DB_USER', 'postgres.nzzsbnxhgbyhzbqqujcn'),
+        'PASSWORD': os.getenv('DB_PASSWORD', '3010168Tofa@@##'),
+        'HOST': os.getenv('DB_HOST', 'aws-0-eu-central-1.pooler.supabase.com'),
+        'PORT': os.getenv('DB_PORT', '6543'),
         'OPTIONS': {
             'sslmode': 'require',
         },
-        'CONN_MAX_AGE': 0,
+        'CONN_MAX_AGE': int(os.getenv('DB_CONN_MAX_AGE', '0')),
     }
 }
 
+# Cache settings
+CACHES = {
+    'default': {
+        'BACKEND': os.getenv('CACHE_BACKEND', 'django.core.cache.backends.locmem.LocMemCache'),
+        'LOCATION': os.getenv('CACHE_LOCATION', 'unique-snowflake'),
+    }
+}
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
+# Static files
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
+# Media files
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-STATIC_URL = "static/"
+# Security settings
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
