@@ -1,5 +1,3 @@
-from django.test import TestCase
-
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -12,7 +10,7 @@ User = get_user_model()
 class UserModelTest(TestCase):
     def setUp(self):
         self.user_data = {
-            'email': 'test@example.com',
+            'email': 'farsashraf44@gmail.com',
             'password': 'testpass123',
             'full_name': 'Test User'
         }
@@ -31,7 +29,7 @@ class UserRegistrationTest(TestCase):
         self.client = Client()
         self.register_url = reverse('accounts:register')
         self.valid_data = {
-            'email': 'newuser@example.com',
+            'email': 'farsashraf44@gmail.com',
             'full_name': 'New User',
             'password1': 'complexpass123',
             'password2': 'complexpass123'
@@ -56,11 +54,11 @@ class UserProfileTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(
-            email='profile@example.com',
+            email='farsashraf44@gmail.com',
             password='testpass123',
             full_name='Profile User'
         )
-        self.client.login(email='profile@example.com', password='testpass123')
+        self.client.login(email='farsashraf44@gmail.com', password='testpass123')
         self.profile_url = reverse('accounts:profile')
 
     def test_profile_view_authenticated(self):
@@ -91,25 +89,25 @@ class UserLoginLogoutTest(TestCase):
         self.login_url = reverse('accounts:login')
         self.logout_url = reverse('accounts:logout')
         self.user = User.objects.create_user(
-            email='login@example.com',
+            email='farsashraf44@gmail.com',
             password='testpass123'
         )
 
     def test_login_success(self):
         response = self.client.post(self.login_url, {
-            'email': 'login@example.com',
+            'email': 'farsashraf44@gmail.com',
             'password': 'testpass123'
         })
         self.assertEqual(response.status_code, 302)  # Redirect after success
 
     def test_login_failure(self):
         response = self.client.post(self.login_url, {
-            'email': 'login@example.com',
+            'email': 'farsashraf44@gmail.com',
             'password': 'wrongpass'
         })
         self.assertEqual(response.status_code, 200)  # Stay on login page
 
     def test_logout(self):
-        self.client.login(email='login@example.com', password='testpass123')
+        self.client.login(email='farsashraf44@gmail.com', password='testpass123')
         response = self.client.get(self.logout_url)
         self.assertEqual(response.status_code, 302)  # Redirect after logout

@@ -7,7 +7,13 @@ from django.utils import timezone
 
 class DashboardStats(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='dashboard_stats')
-
+    dashboard_id = models.AutoField(primary_key=True)
+    dashboard_type = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    
     def total_conversations(self):
         cache_key = 'total_conversations_monthly'
         cached = cache.get(cache_key)
@@ -62,7 +68,6 @@ class DashboardStats(models.Model):
             
         return responses
             
-    
     def conversations_change_rate(self):
         cache_key = 'conversations_change_rate'
         cached = cache.get(cache_key)
@@ -97,7 +102,6 @@ class DashboardStats(models.Model):
             return True
         else:
             return False
-
 
     def get_conversations(self):
         Conversations = Conversation.objects.all()

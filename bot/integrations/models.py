@@ -25,7 +25,7 @@ class Integration(models.Model):
         configuration (JSONField): Additional configuration settings
         meta_data (JSONField): Additional metadata
     """
-    agent_id = models.ForeignKey(
+    agent = models.ForeignKey(
         Agent, 
         on_delete=models.CASCADE, 
         related_name='integrations',
@@ -136,7 +136,7 @@ class Integration(models.Model):
             "is_archived": self.is_archived,
             "configuration": self.configuration,
             "meta_data": self.meta_data,
-            "agent_id": self.agent_id.id,  # Added agent_id to the details
+            "agent": self.agent.id,  # Added agent_id to the details
         }
 
     def to_dict(self):
@@ -165,6 +165,12 @@ class IntegrationCategory(models.Model):
     category_name = models.CharField(
         max_length=255,
         help_text="Name of the category"
+    )
+    agent = models.ForeignKey(
+        Agent, 
+        on_delete=models.CASCADE, 
+        related_name='integration_categories',
+        help_text="The agent this integration category belongs to"
     )
     description = models.TextField(
         blank=True,
@@ -208,5 +214,3 @@ class IntegrationCategory(models.Model):
 
     def to_dict(self):
         return self.get_category_details()                                                      
-
-

@@ -9,25 +9,25 @@ class AgentAdmin(admin.ModelAdmin):
     readonly_fields = ('agent_id', 'created_at', 'updated_at')
 
 class AgentDocumentsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'agent', 'document_name', 'document_type', 'created_at')
+    list_display = ('document_id', 'agent', 'document_name', 'document_format', 'created_at')
     search_fields = ('document_name', 'agent__name')
-    list_filter = ('document_type', 'created_at')
+    list_filter = ('document_format', 'created_at')
     ordering = ('-created_at',)
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('document_id', 'created_at', 'updated_at')
 
 class AgentIntegrationsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'agent', 'integration_type', 'status', 'created_at')
+    list_display = ('integration_id', 'agent', 'integration_type', 'status', 'created_at')
     search_fields = ('agent__name', 'integration_type')
     list_filter = ('integration_type', 'status', 'created_at')
     ordering = ('-created_at',)
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('integration_id', 'created_at', 'updated_at')
 
 class AgentEmbeddingsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'agent', 'embedding_type', 'created_at')
+    list_display = ('embedding_id', 'agent', 'embedding_type', 'created_at')
     search_fields = ('agent__name', 'embedding_type')
     list_filter = ('embedding_type', 'created_at')
     ordering = ('-created_at',)
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('embedding_id', 'created_at', 'updated_at')
 
 admin.site.register(Agent, AgentAdmin)
 admin.site.register(AgentDocuments, AgentDocumentsAdmin)
