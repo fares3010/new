@@ -34,7 +34,7 @@ DEBUG = False
 
 #ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', "aws-0-eu-central-1.pooler.supabase.com,localhost,127.0.0.1,3490-156-217-3-147.ngrok-free.app").split(',')]
 #ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(',')
-ALLOWED_HOSTS=["aws-0-eu-central-1.pooler.supabase.com","localhost","127.0.0.1","13ab-156-214-196-78.ngrok-free.app"]
+ALLOWED_HOSTS=["aws-0-eu-central-1.pooler.supabase.com","13.61.144.96"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -70,7 +70,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://preview--chatty-user-homebase.lovable.app','https://13ab-156-214-196-78.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://preview--chatty-user-homebase.lovable.app','https://13.61.144.96']
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
